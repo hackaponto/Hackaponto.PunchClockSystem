@@ -3,15 +3,15 @@ import { UserDayRepository } from './repositories/user-day.repository';
 import { UserDayRepositoryPortKey } from './ports/user-day-repository.port';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { configDatabase } from './config';
-import { UserDay } from './entities/user-day.entity';
-import { Registry } from './entities/registry.entity';
+import { UserWorkDays } from './entities/user-work-days.entity';
+import { ClokingEvents } from './entities/cloking-events.entity';
 import { RegistryRepository } from './repositories/registry.repository';
 import { RegistryRepositoryPortKey } from './ports/registry-repository.port';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(configDatabase),
-    TypeOrmModule.forFeature([UserDay, Registry]),
+    TypeOrmModule.forFeature([UserWorkDays, ClokingEvents]),
   ],
   providers: [
     {

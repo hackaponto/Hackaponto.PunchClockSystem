@@ -4,23 +4,23 @@ import {
   ManyToOne,
   JoinColumn,
   Index,
-  PrimaryColumn,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
-import { UserDay } from './user-day.entity';
+import { UserWorkDays } from './user-work-days.entity';
 import { RegistryType } from 'src/domain/enums/registry-type.enum';
 
-@Entity({ name: 'registry' })
+@Entity({ name: 'cloking_events' })
 @Index(['userId', 'date'])
-export class Registry {
-  @PrimaryColumn({ type: 'uuid' })
+export class ClokingEvents {
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => UserDay, { nullable: false })
+  @ManyToOne(() => UserWorkDays, { nullable: false })
   @JoinColumn([
     { name: 'user_id', referencedColumnName: 'userId' },
     { name: 'date', referencedColumnName: 'date' },
   ])
-  userDay: UserDay;
+  userWorkDays: UserWorkDays;
 
   @Column({ name: 'user_id', type: 'uuid', nullable: false })
   userId: string;

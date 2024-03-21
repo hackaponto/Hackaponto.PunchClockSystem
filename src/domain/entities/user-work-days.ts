@@ -1,10 +1,10 @@
-import { Registry } from './registry';
+import { ClokingEvents } from './cloking-events';
 
-export class UserDay {
+export class UserWorkDays {
   userId: string;
   date: Date;
   totalWorkHour: string | null;
-  resgitry: Registry[];
+  clokingEvents: ClokingEvents[];
 
   constructor(userId: string, date?: Date, totalWorkHour?: string) {
     if (!userId) {
@@ -13,7 +13,7 @@ export class UserDay {
     this.userId = userId;
     this.date = date ?? new Date();
     this.totalWorkHour = totalWorkHour ?? null;
-    this.resgitry = [];
+    this.clokingEvents = [];
   }
 
   sumTimes(newTime: string): string {

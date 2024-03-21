@@ -1,9 +1,9 @@
 import { Inject } from '@nestjs/common';
-import { Registry } from 'src/domain/entities/registry';
+import { ClokingEvents } from 'src/domain/entities/cloking-events';
 import { PunchClockGatewayPort } from 'src/domain/ports/punch-clock-gateway.port';
-import { UserDay } from 'src/domain/entities/user-day';
-import { UserDay as UserDayEntity } from 'src/infrastructure/db/entities/user-day.entity';
-import { Registry as RegistryEntity } from 'src/infrastructure/db/entities/registry.entity';
+import { UserWorkDays } from 'src/domain/entities/user-work-days';
+import { UserWorkDays as UserWorkDaysEntity } from 'src/infrastructure/db/entities/user-work-days.entity';
+import { ClokingEvents as ClokingEventsEntity } from 'src/infrastructure/db/entities/cloking-events.entity';
 import {
   RegistryRepositoryPort,
   RegistryRepositoryPortKey,
@@ -21,15 +21,15 @@ export class PunchClockGateway implements PunchClockGatewayPort {
     private readonly registryRepository: RegistryRepositoryPort,
   ) {}
 
-  async findUserDay(userId: string, date: Date): Promise<UserDay> {
+  async findUserDay(userId: string, date: Date): Promise<UserWorkDays> {
     const userDayEntity = await this.userDayRepository.findUserDay(
       userId,
       date,
     );
-    const userDay = new UserDay(
+    const userDay = new UserWorkDays(
       userDayEntity.userId,
       userDayEntity.date,
-      userDayEntity.totalWorkHour,
+      userDayEntity.totalHours,
     );
     return userDay;
   }
@@ -46,8 +46,8 @@ export class PunchClockGateway implements PunchClockGatewayPort {
     );
   }
 
-  async createNewPunchClock(registry: Registry): Promise<void> {
-    const entity = new RegistryEntity();
+  async createNewPunchClock(registry: ClokingEvents): Promise<void> {
+    const entity = new ClokingEventsEntity();
     entity.date = registry.date;
     entity.id = registry.id;
     entity.time = registry.time;
@@ -57,22 +57,23 @@ export class PunchClockGateway implements PunchClockGatewayPort {
     await this.registryRepository.createRegistry(entity);
   }
 
-  async createFirstPunchClock(userDay: UserDay): Promise<UserDay> {
-    console.log(userDay);
-
+  async createFirstPunchClock(userDay: UserWorkDays): Promise<UserWorkDays> {
     const userDayEntity = await this.userDayRepository.createUserDay(
-      userDay as unknown as UserDayEntity,
+      userDay as unknown as UserWorkDaysEntity,
     );
-    const user = new UserDay(userDayEntity.userId, userDayEntity.date);
+    const user = new UserWorkDays(userDayEntity.userId, userDayEntity.date);
     return user;
   }
 
-  async findLastRegistry(userId: string, date: Date): Promise<Registry | null> {
+  async findLastRegistry(
+    userId: string,
+    date: Date,
+  ): Promise<ClokingEvents | null> {
     const entity = await this.registryRepository.findLastRegistry(userId, date);
 
     if (!entity) return null;
 
-    const registry = new Registry(
+    const registry = new ClokingEvents(
       entity.type,
       entity.userId,
       entity.date,

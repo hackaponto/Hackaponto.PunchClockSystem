@@ -1,5 +1,5 @@
 import { Inject } from '@nestjs/common';
-import { Registry, UserDay } from '../../domain/entities';
+import { UserWorkDays, ClokingEvents } from '../../domain/entities';
 import { RegistryType } from '../../domain/enums/registry-type.enum';
 import {
   PunchClockGatewayPort,
@@ -13,19 +13,19 @@ export class PunchClockProcessorUseCase {
   ) {}
 
   async handleFirstRegistry(userId: string): Promise<void> {
-    const userDay = new UserDay(userId);
-    const registry = new Registry(RegistryType.IN, userId);
+    const userDay = new UserWorkDays(userId);
+    const registry = new ClokingEvents(RegistryType.IN, userId);
 
-    userDay.resgitry.push(registry);
+    userDay.clokingEvents.push(registry);
 
     await this.punchClockGateway.createFirstPunchClock(userDay);
   }
 
   async handleInRegistry(
     userId: string,
-    lastRegistry: Registry,
+    lastRegistry: ClokingEvents,
   ): Promise<void> {
-    const registry = new Registry(RegistryType.OUT, userId);
+    const registry = new ClokingEvents(RegistryType.OUT, userId);
     lastRegistry.checkDateDifference(registry.time);
 
     const userDay = await this.punchClockGateway.findUserDay(
@@ -48,9 +48,9 @@ export class PunchClockProcessorUseCase {
 
   async handleOutRegistry(
     userId: string,
-    lastRegistry: Registry,
+    lastRegistry: ClokingEvents,
   ): Promise<void> {
-    const registry = new Registry(RegistryType.IN, userId);
+    const registry = new ClokingEvents(RegistryType.IN, userId);
     lastRegistry.checkDateDifference(registry.time);
     await this.punchClockGateway.createNewPunchClock(registry);
   }

@@ -2,7 +2,7 @@ import { BadRequestException } from '@nestjs/common';
 import { RegistryType } from '../enums/registry-type.enum';
 import { v4 } from 'uuid';
 
-export class Registry {
+export class ClokingEvents {
   id: string;
   userId: string;
   date: Date;

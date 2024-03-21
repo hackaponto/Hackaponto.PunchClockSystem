@@ -1,8 +1,8 @@
-import { Registry } from '../entities/registry.entity';
+import { ClokingEvents } from '../entities/cloking-events.entity';
 
 export const RegistryRepositoryPortKey = 'RegistryRepositoryPort';
 
 export interface RegistryRepositoryPort {
-  findLastRegistry(userId: string, date: Date): Promise<Registry>;
-  createRegistry(registry: Registry): Promise<Registry>;
+  findLastRegistry(userId: string, date: Date): Promise<ClokingEvents>;
+  createRegistry(registry: ClokingEvents): Promise<ClokingEvents>;
 }

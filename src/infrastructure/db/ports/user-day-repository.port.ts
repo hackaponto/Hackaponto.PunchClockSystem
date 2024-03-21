@@ -1,14 +1,14 @@
-import { UserDay } from '../entities/user-day.entity';
+import { UserWorkDays } from '../entities/user-work-days.entity';
 
 export const UserDayRepositoryPortKey = 'UserDayRepositoryPort';
 
 export interface UserDayRepositoryPort {
   existUserDay(userId: string, date: Date): Promise<boolean>;
-  createUserDay(userDay: UserDay): Promise<UserDay>;
-  findUserDay(userId: string, date: Date): Promise<UserDay>;
+  createUserDay(userDay: UserWorkDays): Promise<UserWorkDays>;
+  findUserDay(userId: string, date: Date): Promise<UserWorkDays>;
   updateTotalWorkHour(
     userId: string,
     date: Date,
-    totalWorkHour: string,
+    totalHours: string,
   ): Promise<void>;
 }

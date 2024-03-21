@@ -1,21 +1,21 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { RegistryRepositoryPort } from '../ports/registry-repository.port';
 import { Repository } from 'typeorm';
-import { Registry } from '../entities/registry.entity';
+import { ClokingEvents } from '../entities/cloking-events.entity';
 
 export class RegistryRepository implements RegistryRepositoryPort {
   constructor(
-    @InjectRepository(Registry)
-    private repo: Repository<Registry>,
+    @InjectRepository(ClokingEvents)
+    private repo: Repository<ClokingEvents>,
   ) {}
 
-  async createRegistry(registry: Registry): Promise<Registry> {
+  async createRegistry(registry: ClokingEvents): Promise<ClokingEvents> {
     return await this.repo.save(registry);
   }
 
-  async findLastRegistry(userId: string, date: Date): Promise<Registry> {
+  async findLastRegistry(userId: string, date: Date): Promise<ClokingEvents> {
     return await this.repo.findOne({
-      where: { userDay: { userId, date } },
+      where: { userWorkDays: { userId, date } },
       order: { time: 'DESC' },
     });
   }

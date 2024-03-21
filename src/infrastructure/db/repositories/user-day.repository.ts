@@ -1,27 +1,27 @@
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserDayRepositoryPort } from '../ports/user-day-repository.port';
-import { UserDay } from '../entities/user-day.entity';
+import { UserWorkDays } from '../entities/user-work-days.entity';
 import { Repository } from 'typeorm';
 
 export class UserDayRepository implements UserDayRepositoryPort {
   constructor(
-    @InjectRepository(UserDay)
-    private repo: Repository<UserDay>,
+    @InjectRepository(UserWorkDays)
+    private repo: Repository<UserWorkDays>,
   ) {}
 
-  async findUserDay(userId: string, date: Date): Promise<UserDay> {
+  async findUserDay(userId: string, date: Date): Promise<UserWorkDays> {
     return await this.repo.findOneBy({ userId, date });
   }
 
   async updateTotalWorkHour(
     userId: string,
     date: Date,
-    totalWorkHour: string,
+    totalHours: string,
   ): Promise<void> {
-    await this.repo.update({ date, userId }, { totalWorkHour });
+    await this.repo.update({ date, userId }, { totalHours });
   }
 
-  async createUserDay(userDay: UserDay): Promise<UserDay> {
+  async createUserDay(userDay: UserWorkDays): Promise<UserWorkDays> {
     return await this.repo.save(userDay);
   }
 
