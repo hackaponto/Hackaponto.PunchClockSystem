@@ -1,0 +1,33 @@
+version: '3'
+services:
+  punch-clock-system:
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile
+    container_name: punch-clock-system
+    env_file:
+      - ../.env
+    ports:
+      - "3000:3000"
+    volumes:
+      - ..:/app
+    depends_on:
+      - db
+    networks:
+      - punchClockNetwork
+
+  db:
+    image: 'postgres:13.1-alpine'
+    container_name: db
+    environment:
+      - POSTGRES_DB=dev
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    ports:
+      - 5432:5432
+    networks:
+      - punchClockNetwork
+    
+networks:
+  punchClockNetwork:
+    driver: bridge
