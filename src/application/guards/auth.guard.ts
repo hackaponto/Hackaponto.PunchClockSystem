@@ -4,21 +4,36 @@ import {
   Injectable,
   UnauthorizedException,
 } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
 import { Request } from 'express';
+import { CognitoJwtVerifier } from 'aws-jwt-verify';
+import { CognitoJwtVerifierSingleUserPool } from 'aws-jwt-verify/cognito-verifier';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  constructor(private jwtService: JwtService) {}
+  private readonly cognito: CognitoJwtVerifierSingleUserPool<{
+    userPoolId: string;
+    tokenUse: 'access';
+    clientId: string;
+  }>;
+
+  constructor() {
+    this.cognito = CognitoJwtVerifier.create({
+      userPoolId: process.env.AWS_USER_POOL_ID,
+      tokenUse: 'access',
+      clientId: process.env.AWS_CLIENT_ID,
+    });
+  }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
+    console.log(process.env.AWS_USER_POOL_ID);
+    console.log(process.env.AWS_USER_CLIENT_ID);
     const request = context.switchToHttp().getRequest();
     const token = this.extractTokenFromHeader(request);
     if (!token) {
       throw new UnauthorizedException();
     }
     try {
-      const payload = await this.jwtService.decode(token);
+      const payload = await this.cognito.verify(token);
       request['user'] = payload;
     } catch {
       throw new UnauthorizedException();
